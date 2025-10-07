@@ -1,0 +1,19 @@
+<nav class="header">
+    <a class="logo" routerLink="/">
+        <img src="assets/logo.png" alt="Logo de la Tienda">
+        <span>Tienda</span>
+    </a>
+    <button class="hamburger" type="button" (click)="toggle()" [attr.aria-expanded]="open" aria-controls="main-menu"
+        aria-label="Abrir menú" [class.open]="open">
+        <span></span><span></span><span></span>
+    </button>
+
+    <h1>Bienvenido a Nuestra Tienda Online</h1>
+    <ul id="main-menu" class="menu" [ngClass]="{open: open}">
+        <li><a routerLink="/">Inicio</a></li>
+        <li><a routerLink="/mujer">Productosm</a></li>
+        <li><a routerLink="/hombre">Productosh</a></li>
+        <li><a routerLink="/cart">Carrito</a></li>
+        <li><a routerLink="/contact">Contacto</a></li>
+    </ul>
+</nav>
