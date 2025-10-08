@@ -1,15 +1,40 @@
+/* Header básico */
 .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   padding: .75rem 1rem;
   border-bottom: 1px solid #e5e7eb;
 }
 
 .logo {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
   font-weight: 700;
-  text-decoration: none;
   color: inherit;
+  text-decoration: none;
+
+  img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+  }
+}
+
+.fotitos {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  font-weight: 700;
+  color: inherit;
+  text-decoration: none;
+
+  img {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+  }
 }
 
 /* Botón hamburguesa */
@@ -21,64 +46,177 @@
   justify-content: space-between;
   background: transparent;
   border: 0;
-  padding: 0;
   cursor: pointer;
+  padding: 0;
 
   span {
     display: block;
     height: 2px;
     background: currentColor;
-    transition: transform .2s ease, opacity .2s ease, width .2s ease;
+    transition: transform .2s, opacity .2s;
   }
 
-  /* animación a "X" cuando está abierto */
-  &.open span:nth-child(1) { transform: translateY(11px) rotate(45deg); }
-  &.open span:nth-child(2) { opacity: 0; }
-  &.open span:nth-child(3) { transform: translateY(-11px) rotate(-45deg); }
+  &.open span:nth-child(1) {
+    transform: translateY(11px) rotate(45deg);
+  }
+
+  &.open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  &.open span:nth-child(3) {
+    transform: translateY(-11px) rotate(-45deg); // rota el boton hamburguesa cuando lo tocan
+  }
 }
 
-/* Menú */
-.menu {
+/* Backdrop */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  display: flex;
+  justify-content: flex-end;
+  /* panel desde la derecha */
+  z-index: 50;
+}
+
+/* Drawer / panel */
+.drawer {
+  width: min(92vw, 380px);
+  height: 100%;
+  background: #fff;
+  color: #111;
+  transform: translateX(0);
+  /* entra ya visible al crear el *ngIf* */
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+  padding: 1rem;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, .15);
+  animation: slideIn .18s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.drawer__section {
+  margin-top: .5rem;
+}
+
+.drawer__section h3 {
+  font-size: .9rem;
+  font-weight: 700;
+  margin: .25rem 0 .5rem;
+  color: #374151;
+}
+
+.drawer__section ul {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: none;           /* mobile: oculto por defecto */
-  position: absolute;
-  top: 56px;               /* debajo del header */
-  right: 1rem;
-  background: #fff;
-  border: 1px solid #e5e7eb;
-  border-radius: .5rem;
-  box-shadow: 0 6px 20px rgba(0,0,0,.08);
-  overflow: hidden;
-
-  &.open { display: block; }
-
-  li { border-bottom: 1px solid #f3f4f6; }
-  li:last-child { border-bottom: 0; }
-
-  a {
-    display: block;
-    padding: .75rem 1rem;
-    text-decoration: none;
-    color: inherit;
-
-    &:hover { background: #f9fafb; }
-  }
+  display: grid;
+  gap: .25rem;
 }
 
-/* Desktop: mostrar menú horizontal y ocultar hamburguesa */
-@media (min-width: 768px) {
-  .hamburger { display: none; }
-  .menu {
-    position: static;
-    display: flex !important;
-    gap: 1rem;
-    border: 0;
-    box-shadow: none;
-    background: transparent;
+.drawer__section a {
+  display: block;
+  padding: .5rem .25rem;
+  text-decoration: none;
+  color: inherit;
+  border-radius: .375rem;
+}
 
-    li { border: 0; }
-    a { padding: 0; }
-  }
+.drawer__section a:hover {
+  background: #f3f4f6;
+}
+
+.close {
+  border: 0;
+  background: transparent;
+  font-size: 1.25rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* Desktop: podés ocultar la hamburguesa y mostrar un menú normal si querés */
+@media (min-width: 1024px) {
+  /* .hamburger { display:none; }  // si preferís menú horizontal en desktop */
+}
+
+.menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-list>li {
+  margin-bottom: .25rem;
+}
+
+.menu-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  border: 0;
+  padding: .6rem .25rem;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  border-radius: .375rem;
+}
+
+.menu-btn:hover {
+  background: #f3f4f6;
+}
+
+.chevron {
+  transition: transform .15s ease;
+}
+
+.chevron.rot {
+  transform: rotate(180deg);
+}
+
+/* Submenu (cerrado por defecto) */
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .18s ease;
+  padding-left: .5rem;
+  border-left: 2px solid #eee;
+}
+
+.submenu.open {
+  max-height: 500px;
+}
+
+/* suficiente para mostrar items */
+
+.submenu li a {
+  display: block;
+  padding: .45rem .25rem;
+  text-decoration: none;
+  color: inherit;
+  border-radius: .375rem;
+}
+
+.submenu li a:hover {
+  background: #f9fafb;
 }
