@@ -1,19 +1,48 @@
 <nav class="header">
-    <a class="logo" routerLink="/">
-        <img src="assets/logo.png" alt="Logo de la Tienda">
-        <span>Tienda</span>
-    </a>
-    <button class="hamburger" type="button" (click)="toggle()" [attr.aria-expanded]="open" aria-controls="main-menu"
-        aria-label="Abrir menú" [class.open]="open">
+    <button class="hamburger" type="button" (click)="toggle()" [attr.aria-expanded]="open" aria-controls="offcanvas"
+        aria-label="Abrir menú" [ngClass]="{ open: open }">
         <span></span><span></span><span></span>
     </button>
 
-    <h1>Bienvenido a Nuestra Tienda Online</h1>
-    <ul id="main-menu" class="menu" [ngClass]="{open: open}">
-        <li><a routerLink="/">Inicio</a></li>
-        <li><a routerLink="/mujer">Productosm</a></li>
-        <li><a routerLink="/hombre">Productosh</a></li>
-        <li><a routerLink="/cart">Carrito</a></li>
-        <li><a routerLink="/contact">Contacto</a></li>
-    </ul>
+    <a class="logo" routerLink="/">
+        <img src="logo.jpg" alt="Logo de la Tienda" />
+    </a>
+    <a class="fotitos">
+        <img src="busqeuda.jpg" alt="Buscar" class="search-icon" />
+        <img src="usuario.jpg" alt="Usuario" class="user-icon" />
+        <img src="carrito.jpg" alt="Carrito de compras" class="cart-icon" />
+        <img src="corazon.jpg" alt="Carrito de compras" class="cart-icon" />
+    </a>
+
+
 </nav>
+
+<div class="backdrop" *ngIf="open" (click)="close()" aria-hidden="true">
+    <aside id="offcanvas" class="drawer" role="dialog" aria-modal="true" (click)="stop($event)">
+        <section class="drawer__section">
+            <ul class="menu-list">
+                <li class="has-submenu" (mouseenter)="openSubmenu()" (mouseleave)="closeSubmenu()">
+                    <button type="button" class="menu-btn" (click)="toggleSubmenu()" [attr.aria-expanded]="submenuOpen"
+                        aria-controls="submenu-productos">
+                        Productos
+                        <span class="chevron" [class.rot]="submenuOpen">▾</span>
+                    </button>
+                    <ul id="submenu-productos" class="submenu" [class.open]="submenuOpen">
+                        <li *ngFor="let c of categorias">
+                            <a [routerLink]="c.link">{{ c.label }}</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </section>
+
+        <section class="drawer__section">
+            <h3>Links</h3>
+            <ul>
+                <li *ngFor="let l of links">
+                    <a [routerLink]="l.link">{{ l.label }}</a>
+                </li>
+            </ul>
+        </section>
+    </aside>
+</div>
