@@ -1,83 +1,99 @@
 // src/pages/home/home.ts
-import { Component, OnInit, signal } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
-import { MercadoLibreService, MLItem } from '../../app/services/api';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ProductCardComponent } from '../../components/producto/producto';
+import { MLItem as ProductoInterface } from '../../app/services/api';
 
 type CatVal = { id: string; name: string; results?: number };
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CurrencyPipe],
+  imports: [CommonModule, HttpClientModule, ProductCardComponent],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
 })
 export class HomeComponent implements OnInit {
-  constructor(private api: MercadoLibreService) { }
-
-  Math = Math;
+  private http = inject(HttpClient);
 
   // estado
-  query = signal('women');     // DummyJSON busca por "women"
-  limit = signal(20);
-  offset = signal(0);
-  selectedCategory = signal<string>(''); // vacío = todas
+  limit = signal(194);                 // cantidad de productos a traer
+  selectedCategory = signal<string>(''); // '' = todas
 
-  productos = signal<MLItem[]>([]);
+  productos = signal<ProductoInterface[]>([]);
   total = signal(0);
   categorias = signal<CatVal[]>([]);
+  loading = signal<boolean>(true);
+  error = signal<string>('');
 
   ngOnInit() {
-    // Cargar categorías “women*”
-    this.api.getCategories().subscribe((all) => {
-      const women = (all as string[]).filter(c => c.startsWith('womens-'));
-      this.categorias.set(women.map(id => ({
-        id,
-        name: id.replace('womens-', 'Women ').replace('-', ' ')
-      })));
-    });
-
+    this.loadCategories();
     this.load();
   }
 
-  load() {
-    const cat = this.selectedCategory();
-    const req = cat
-      ? this.api.searchByCategory(cat, this.limit(), this.offset())
-      : this.api.searchWomen(this.query(), this.limit(), this.offset());
+  /** Trae todas las categorías de DummyJSON */
+  private loadCategories() {
+    // https://dummyjson.com/products/categories  -> array de strings
+    this.http.get<string[]>('https://dummyjson.com/products/categories')
+      .subscribe({
+        next: (cats) => {
+          // Convertimos a {id,name}
+          const map = (id: string) => ({ id, name: this.prettyCat(id) });
+          this.categorias.set(cats.map(map));
+        },
+        error: (e) => {
+          console.error('Error categorías', e);
+          this.categorias.set([]);
+        }
+      });
+  }
 
-    req.subscribe({
-      next: (resp) => {
-        // DummyJSON devuelve { products, total }
-        const items = (resp.products ?? []).map(p => ({
-          ...p,
-          permalink: `https://dummyjson.com/products/${p.id}`,
-          currency_id: 'USD', // para el pipe de moneda en tu template
-          thumbnail: p.thumbnail ?? p.images?.[0]
-        }));
-        this.productos.set(items);
-        this.total.set(resp.total ?? items.length);
-      },
-      error: (e) => console.error('DummyJSON error', e)
-    });
+  /** Carga TODOS los productos o por categoría (según selectedCategory) */
+  load() {
+    this.loading.set(true);
+    this.error.set('');
+    const cat = this.selectedCategory();
+    const url = cat
+      ? `https://dummyjson.com/products/category/${encodeURIComponent(cat)}?limit=${this.limit()}`
+      : `https://dummyjson.com/products?limit=${this.limit()}`;
+
+    this.http.get<{ products: any[]; total: number }>(url)
+      .subscribe({
+        next: (resp) => {
+          const items = (resp.products ?? []).map((p) => this.toMLItem(p));
+          this.productos.set(items);
+          this.total.set(resp.total ?? items.length);
+          this.loading.set(false);
+        },
+        error: (err) => {
+          console.error(err);
+          this.error.set('No se pudieron cargar los productos.');
+          this.loading.set(false);
+        },
+      });
   }
 
   onSelectCategory(id: string) {
     this.selectedCategory.set(id || ''); // '' = todas
-    this.offset.set(0);
     this.load();
   }
 
-  next() {
-    if (this.offset() + this.limit() < this.total()) {
-      this.offset.set(this.offset() + this.limit());
-      this.load();
-    }
+  /** Adapta el item de DummyJSON al tipo que espera tu ProductCard */
+  private toMLItem(p: any): ProductoInterface {
+    return {
+      id: p.id,
+      title: p.title,
+      price: p.price,
+      currency_id: 'USD',
+      thumbnail: p.thumbnail ?? p.images?.[0] ?? '',
+      category: p.category,
+      permalink: `https://dummyjson.com/products/${p.id}`,
+    } as ProductoInterface;
   }
-  prev() {
-    if (this.offset() > 0) {
-      this.offset.set(Math.max(0, this.offset() - this.limit()));
-      this.load();
-    }
+
+  private prettyCat(id: string) {
+    // "womens-dresses" -> "Womens Dresses"
+    return id.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   }
 }

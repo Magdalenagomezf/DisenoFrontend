@@ -1,40 +1,29 @@
-<section class="toolbar p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center flex-wrap gap-4">
-    <div class="filters">
-        <label class="font-semibold text-gray-700">
-            Categoría:
-        </label>
-    </div>
+<section class="toolbar">
+  <div class="filters">
+    <label class="label">Categoría:</label>
+    <select (change)="onSelectCategory($any($event.target).value)">
+      <option value="">Todas</option>
+      <option *ngFor="let c of categorias()" [value]="c.id">{{ c.name }}</option>
+    </select>
+  </div>
 
-    @if (total() > 0) {
-    <div class="paging">
-        <button mat-stroked-button (click)="prev()" [disabled]="offset() === 0">« Anterior</button>
-        <span class="px-3 text-sm text-gray-700">
-            {{ offset() + 1 }}–{{ Math.min(offset() + limit(), total()) }} / {{ total() }}
-        </span>
-        <button mat-stroked-button (click)="next()" [disabled]="offset() + limit() >= total()">Siguiente »</button>
-    </div>
-    }
+  <div class="summary" *ngIf="total() as t">
+    <span>Mostrando {{ productos().length }} de {{ t }}</span>
+  </div>
 </section>
 
-@if (productos().length) {
-<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-    @for (p of productos(); track p.id) {
-    <article class="card bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-xl transition duration-300">
-        <a [href]="p.permalink" target="_blank" rel="noopener noreferrer" class="block">
-            <img [src]="p.thumbnail" alt="{{ p.title }}" class="w-full h-48 object-cover" />
-            <div class="p-4">
-                <h3 class="title text-lg font-semibold text-gray-800 truncate">{{ p.title }}</h3>
-                <p class="price text-2xl font-bold text-green-600 mt-2">
-                    {{ p.price | currency: (p.currency_id || 'ARS') }}
-                </p>
-                <p class="hint text-sm text-blue-500 mt-1">Ver en Mercado Libre ↗</p>
-            </div>
-        </a>
-    </article>
-    }
+<!-- Estados -->
+<div class="state" *ngIf="loading()">Cargando productos…</div>
+<div class="state error" *ngIf="error() && !loading()">{{ error() }}</div>
+
+<!-- Grid -->
+<section class="grid" >
+  @for (p of productos(); track p.id){
+    <app-product-card [product]="p"></app-product-card>
+  }
 </section>
-} @else {
-<div class="empty text-center p-10 text-gray-500 bg-white rounded-lg shadow-md m-6">
-    No se encontraron productos. Probá otra categoría o término de búsqueda.
+
+<!-- Vacío -->
+<div class="empty" *ngIf="!loading() && !error() && productos().length === 0">
+  No se encontraron productos. Probá otra categoría.
 </div>
-}

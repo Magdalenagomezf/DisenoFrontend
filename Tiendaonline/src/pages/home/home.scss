@@ -1,85 +1,58 @@
 .toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    padding: .75rem 1rem;
-    border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: .75rem 1rem;
+  border-bottom: 1px solid #eee;
+  background: #f9fafb;
 }
 
-.filters select {
-    padding: .4rem .6rem;
-    border: 1px solid #ddd;
-    border-radius: .5rem;
+.filters {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
 }
 
-.paging {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
+.label {
+  font-weight: 600;
+  color: #374151;
 }
 
-.paging button {
-    padding: .4rem .6rem;
-    border: 1px solid #ddd;
-    background: #fff;
-    border-radius: .5rem;
-    cursor: pointer;
+select {
+  padding: .4rem .6rem;
+  border: 1px solid #ddd;
+  border-radius: .5rem;
+  background: #fff;
 }
 
-.paging button[disabled] {
-    opacity: .5;
-    cursor: not-allowed;
+.summary { color: #555; font-size: .95rem; }
+
+.state {
+  margin: 1rem;
+  padding: 1rem;
+  border: 1px dashed #e5e7eb;
+  border-radius: .75rem;
+  text-align: center;
+
+  &.error {
+    border-color: #fecaca; background: #fee2e2; color: #7f1d1d;
+  }
 }
 
 .grid {
-    padding: 1rem;
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-}
-
-.card {
-    border: 1px solid #eee;
-    border-radius: .75rem;
-    overflow: hidden;
-    background: #fff;
-
-    a {
-        color: inherit;
-        text-decoration: none;
-        display: grid;
-        gap: .5rem;
-        padding: .75rem;
-    }
-
-    img {
-        width: 100%;
-        height: 180px;
-        object-fit: contain;
-        background: #fafafa;
-        border-radius: .5rem;
-    }
-
-    .title {
-        font-size: .9rem;
-        line-height: 1.2;
-        height: 2.4em;
-        overflow: hidden;
-    }
-
-    .price {
-        font-weight: 700;
-    }
-
-    .hint {
-        font-size: .75rem;
-        color: #6b7280;
-    }
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 
 .empty {
-    padding: 2rem;
-    text-align: center;
-    color: #6b7280;
+  padding: 2rem;
+  margin: 1rem;
+  text-align: center;
+  color: #6b7280;
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: .75rem;
 }

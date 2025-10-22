@@ -1,6 +1,6 @@
 <mat-card class="product-card">
-  <!-- Enlaza el thumbnail y el título -->
-  <a [href]="product().permalink" target="_blank" class="product-link">
+  <!-- Header clickable: navega al detalle interno -->
+  <div class="product-link" (click)="goDetail($event)">
     <mat-card-header>
       <div mat-card-avatar class="product-image-container">
         <img [src]="product().thumbnail" [alt]="product().title" class="product-img" />
@@ -8,7 +8,7 @@
       <mat-card-title class="product-title">{{ product().title }}</mat-card-title>
       <mat-card-subtitle>{{ product().id }}</mat-card-subtitle>
     </mat-card-header>
-  </a>
+  </div>
 
   <mat-card-content>
     <p class="product-description">{{ product().title | slice: 0 : 70 }}...</p>
@@ -32,12 +32,11 @@
         Agregar
       </button>
 
-      <a [href]="product().permalink" target="_blank">
-        <button mat-flat-button>
-          <mat-icon>launch</mat-icon>
-          Ver
-        </button>
-      </a>
+      <!-- Ver en sitio externo (sin href para evitar que capture el click del header) -->
+      <button mat-flat-button (click)="openExternal($event)">
+        <mat-icon>launch</mat-icon>
+        Ver en el sitio
+      </button>
     </div>
   </mat-card-actions>
 </mat-card>

@@ -1,5 +1,5 @@
 import { Component, input, inject } from '@angular/core';
-import { CommonModule, CurrencyPipe, SlicePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe, SlicePipe, NgIf } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,6 +15,7 @@ import { FavoritesService } from '../../app/services/favorites.service';
   standalone: true,
   imports: [
     CommonModule,
+    NgIf,
     MatCardModule,
     MatIconModule,
     MatButtonModule,
@@ -25,12 +26,28 @@ import { FavoritesService } from '../../app/services/favorites.service';
   styleUrls: ['./producto.scss']
 })
 export class ProductCardComponent {
+  /** Datos del producto desde la lista */
   product = input.required<ProductoInterface>();
 
   private auth = inject(LoginService);
   private cart = inject(CartService);
   private favs = inject(FavoritesService);
   private router = inject(Router);
+
+  /** Ir a la página interna de detalle */
+  goDetail(e: Event) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.router.navigate(['/detalle', this.product().id]);
+  }
+
+  /** Abrir el sitio externo en otra pestaña sin afectar el click interno */
+  openExternal(ev: Event) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    const url = this.product().permalink;
+    if (url) window.open(url, '_blank');
+  }
 
   /** Ejecuta la acción solo si hay sesión; si no, redirige al login */
   private requireLoginOr(fn: () => void) {

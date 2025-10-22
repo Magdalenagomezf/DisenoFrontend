@@ -14,12 +14,8 @@ class LoginServiceMock {
   isLoggedIn = () => this._logged;
   setLogged(v: boolean) { this._logged = v; }
 }
-class CartServiceMock {
-  add = jasmine.createSpy('add');
-}
-class FavoritesServiceMock {
-  toggle = jasmine.createSpy('toggle');
-}
+class CartServiceMock { add = jasmine.createSpy('add'); }
+class FavoritesServiceMock { toggle = jasmine.createSpy('toggle'); }
 
 describe('ProductCardComponent', () => {
   let component: ProductCardComponent;
@@ -30,13 +26,13 @@ describe('ProductCardComponent', () => {
   let router: Router;
 
   const mockProduct: MLItem = {
-    id: 1,
-    title: 'Vestido de Fiesta Elegante para Mujer',
-    price: 15000.5,
+    id: 176,
+    title: 'Women Handbag Black',
+    price: 59.99,
     currency_id: 'USD',
-    permalink: 'https://dummyjson.com/products/1',
-    thumbnail: 'https://cdn.dummyjson.com/product-images/1/thumbnail.jpg',
-    category: 'womens-dresses'
+    permalink: 'https://dummyjson.com/products/176',
+    thumbnail: 'https://cdn.dummyjson.com/product-images/womens-bags/women-handbag-black/thumbnail.webp',
+    category: 'womens-bags'
   };
 
   beforeEach(async () => {
@@ -57,12 +53,17 @@ describe('ProductCardComponent', () => {
     cart = TestBed.inject(CartService) as unknown as CartServiceMock;
     favs = TestBed.inject(FavoritesService) as unknown as FavoritesServiceMock;
     router = TestBed.inject(Router);
-
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should navigate to detail on goDetail', () => {
+    const navSpy = spyOn(router, 'navigate');
+    component.goDetail(new MouseEvent('click'));
+    expect(navSpy).toHaveBeenCalledWith(['/detalle', mockProduct.id]);
   });
 
   it('should add to cart when logged in', () => {
