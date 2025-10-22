@@ -1,18 +1,24 @@
+// tiendaonline/src/services/api.spec.ts
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Api, Producto } from './api'; // Asegurate de que la ruta y nombre coincidan con tu archivo
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 
-describe('Api', () => {
-  let service: Api;
+import { MercadoLibreService, MLItem } from './api';
+
+describe('MercadoLibreService (DummyJSON)', () => {
+  let service: MercadoLibreService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [Api],
+      providers: [
+        MercadoLibreService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
     });
 
-    service = TestBed.inject(Api);
+    service = TestBed.inject(MercadoLibreService);
     httpMock = TestBed.inject(HttpTestingController);
   });
 
@@ -20,36 +26,52 @@ describe('Api', () => {
     httpMock.verify();
   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
+  it('searchWomen: llama /products/search con q, limit y skip', () => {
+    const q = 'women';
+    const limit = 20;
+    const offset = 0;
 
-  it('should fetch all products successfully', () => {
-    const mockProducts: Producto[] = [
-      { id: 1, title: 'Producto 1', price: 100, description: '', category: '', image: '' },
-      { id: 2, title: 'Producto 2', price: 200, description: '', category: '', image: '' },
-    ];
+    const mockResponse = {
+      products: [
+        { id: 1, title: 'Vestido', price: 100, category: 'womens-dresses', thumbnail: 'img.jpg' } as MLItem,
+      ],
+      total: 1
+    };
 
-    service.fetchAllProducts();
+    service.searchWomen(q, limit, offset).subscribe((resp) => {
+      expect(resp.products.length).toBe(1);
+      expect(resp.products[0].title).toBe('Vestido');
+      expect(resp.total).toBe(1);
+    });
 
-    const req = httpMock.expectOne('https://fakestoreapi.com/products');
+    const req = httpMock.expectOne(r =>
+      r.url === 'https://dummyjson.com/products/search' &&
+      r.params.get('q') === q &&
+      r.params.get('limit') === String(limit) &&
+      r.params.get('skip') === String(offset)
+    );
     expect(req.request.method).toBe('GET');
-
-    // Simula respuesta del backend
-    req.flush(mockProducts);
-
-    expect(service.isLoading()).toBeFalse();
-    expect(service.hasError()).toBeFalse();
-    expect(service.products().length).toBeGreaterThan(0);
+    req.flush(mockResponse);
   });
 
-  it('should handle error on fetch', () => {
-    service.fetchAllProducts();
+  it('searchByCategory: llama /products/category/:id con limit y skip', () => {
+    const categoryId = 'womens-dresses';
+    const limit = 10;
+    const offset = 20;
 
-    const req = httpMock.expectOne('https://fakestoreapi.com/products');
-    req.error(new ErrorEvent('Network error'));
+    const mockResponse = { products: [] as MLItem[], total: 0 };
 
-    expect(service.hasError()).toBeTrue();
-    expect(service.errorMsg()).toContain('No se pudieron cargar los productos');
+    service.searchByCategory(categoryId, limit, offset).subscribe((resp) => {
+      expect(resp.products).toEqual([]);
+      expect(resp.total).toBe(0);
+    });
+
+    const req = httpMock.expectOne(r =>
+      r.url === `https://dummyjson.com/products/category/${categoryId}` &&
+      r.params.get('limit') === String(limit) &&
+      r.params.get('skip') === String(offset)
+    );
+    expect(req.request.method).toBe('GET');
+    req.flush(mockResponse);
   });
 });

@@ -1,0 +1,85 @@
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: .75rem 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.filters select {
+    padding: .4rem .6rem;
+    border: 1px solid #ddd;
+    border-radius: .5rem;
+}
+
+.paging {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.paging button {
+    padding: .4rem .6rem;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: .5rem;
+    cursor: pointer;
+}
+
+.paging button[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.grid {
+    padding: 1rem;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
+
+.card {
+    border: 1px solid #eee;
+    border-radius: .75rem;
+    overflow: hidden;
+    background: #fff;
+
+    a {
+        color: inherit;
+        text-decoration: none;
+        display: grid;
+        gap: .5rem;
+        padding: .75rem;
+    }
+
+    img {
+        width: 100%;
+        height: 180px;
+        object-fit: contain;
+        background: #fafafa;
+        border-radius: .5rem;
+    }
+
+    .title {
+        font-size: .9rem;
+        line-height: 1.2;
+        height: 2.4em;
+        overflow: hidden;
+    }
+
+    .price {
+        font-weight: 700;
+    }
+
+    .hint {
+        font-size: .75rem;
+        color: #6b7280;
+    }
+}
+
+.empty {
+    padding: 2rem;
+    text-align: center;
+    color: #6b7280;
+}

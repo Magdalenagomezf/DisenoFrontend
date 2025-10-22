@@ -1,1 +1,37 @@
-<p>producto works!</p>
+<mat-card class="product-card">
+    <!-- Enlaza el thumbnail y el título -->
+    <a [href]="product().permalink" target="_blank" class="product-link">
+        <mat-card-header>
+            <!-- Usamos una div simple como contenedor del thumbnail -->
+            <div mat-card-avatar class="product-image-container">
+                <img [src]="product().thumbnail" [alt]="product().title" class="product-img">
+            </div>
+            <mat-card-title class="product-title">{{ product().title }}</mat-card-title>
+            <!-- La API de Mercado Libre no siempre devuelve la categoría directamente en el item, 
+                 pero usamos el ID o un campo relevante si existiera. -->
+            <mat-card-subtitle>{{ product().id }}</mat-card-subtitle>
+        </mat-card-header>
+    </a>
+
+    <mat-card-content>
+        <!-- Usamos la descripción del título ya que la API de ML no siempre proporciona una descripción detallada en el listado. -->
+        <!-- Utilizamos el pipe 'slice' que requiere 'CommonModule' -->
+        <p class="product-description">{{ product().title | slice:0:70 }}...</p>
+    </mat-card-content>
+
+    <mat-card-actions class="flex justify-between items-center">
+        <div class="price-section">
+            <!-- Mostramos el precio con el pipe currency, usando el currency_id de la API de ML -->
+            <span class="price font-bold text-xl text-green-700">
+                {{ product().price | currency: product().currency_id }}
+            </span>
+        </div>
+
+        <a [href]="product().permalink" target="_blank">
+            <button mat-raised-button color="primary">
+                <mat-icon>launch</mat-icon>
+                Ver Producto
+            </button>
+        </a>
+    </mat-card-actions>
+</mat-card>
