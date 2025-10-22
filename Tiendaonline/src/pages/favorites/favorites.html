@@ -1,0 +1,24 @@
+<section class="favorites">
+  <h2>Favoritos ({{ favs.count() }})</h2>
+
+  <div *ngIf="favs.count() === 0; else listTpl" class="empty">
+    <p>No tenés productos en favoritos.</p>
+    <a routerLink="/" class="btn">Ver productos</a>
+  </div>
+
+  <ng-template #listTpl>
+    <div class="grid">
+      <article class="card" *ngFor="let p of favs.list()">
+        <img [src]="p.image || ''" [alt]="p.title" class="thumb" />
+        <div class="body">
+          <h3 class="title">{{ p.title }}</h3>
+          <div class="price">{{ p.price | currency }}</div>
+          <div class="actions">
+            <button class="btn outline" (click)="addToCart(p)">Agregar al carrito</button>
+            <button class="btn danger" (click)="remove(p.id)">Quitar</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </ng-template>
+</section>

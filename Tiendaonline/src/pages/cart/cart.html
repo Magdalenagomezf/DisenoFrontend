@@ -1,0 +1,56 @@
+<section class="cart">
+  <h2>Carrito</h2>
+
+  <div *ngIf="cart.totalItems() === 0; else tableTpl" class="empty">
+    <p>Tu carrito está vacío.</p>
+    <a routerLink="/" class="btn">Explorar productos</a>
+  </div>
+
+  <ng-template #tableTpl>
+    <div class="table">
+      <div class="thead">
+        <div>Producto</div>
+        <div class="right">Precio</div>
+        <div class="center">Cant.</div>
+        <div class="right">Subtotal</div>
+        <div></div>
+      </div>
+
+      <div class="row" *ngFor="let i of cart.list()">
+        <div class="prod">
+          <img [src]="i.image || ''" alt="" />
+          <div class="title">{{ i.title }}</div>
+        </div>
+        <div class="right">{{ i.price | currency }}</div>
+        <div class="center">
+          <input
+            type="number"
+            min="0"
+            [value]="i.qty"
+            (input)="setQty(i.id, $event)"
+            aria-label="Cantidad"
+          />
+        </div>
+        <div class="right">{{ (i.price * i.qty) | currency }}</div>
+        <div class="center">
+          <button class="btn danger" (click)="remove(i.id)">Quitar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="line">
+        <span>Items:</span>
+        <strong>{{ cart.totalItems() }}</strong>
+      </div>
+      <div class="line">
+        <span>Total:</span>
+        <strong class="total">{{ cart.totalPrice() | currency }}</strong>
+      </div>
+      <div class="actions">
+        <button class="btn outline" (click)="clear()">Vaciar carrito</button>
+        <button class="btn primary" disabled>Finalizar compra</button>
+      </div>
+    </div>
+  </ng-template>
+</section>

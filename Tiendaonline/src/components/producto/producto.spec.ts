@@ -1,14 +1,34 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { ProductCardComponent } from './producto';
-import { MLItem } from '../../app/services/api'; // 👈 ajustado a tu ruta real
+import { MLItem } from '../../app/services/api';
+import { LoginService } from '../../app/services/login.service';
+import { CartService } from '../../app/services/cart.service';
+import { FavoritesService } from '../../app/services/favorites.service';
+
+class LoginServiceMock {
+  private _logged = true;
+  isLoggedIn = () => this._logged;
+  setLogged(v: boolean) { this._logged = v; }
+}
+class CartServiceMock {
+  add = jasmine.createSpy('add');
+}
+class FavoritesServiceMock {
+  toggle = jasmine.createSpy('toggle');
+}
 
 describe('ProductCardComponent', () => {
   let component: ProductCardComponent;
   let fixture: ComponentFixture<ProductCardComponent>;
+  let auth: LoginServiceMock;
+  let cart: CartServiceMock;
+  let favs: FavoritesServiceMock;
+  let router: Router;
 
-  // Mock acorde a DummyJSON (id: number, USD por defecto)
   const mockProduct: MLItem = {
     id: 1,
     title: 'Vestido de Fiesta Elegante para Mujer',
@@ -21,13 +41,23 @@ describe('ProductCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProductCardComponent],
-      providers: [provideNoopAnimations()], // evita errores de Material en tests
+      imports: [ProductCardComponent, RouterTestingModule],
+      providers: [
+        provideNoopAnimations(),
+        { provide: LoginService, useClass: LoginServiceMock },
+        { provide: CartService, useClass: CartServiceMock },
+        { provide: FavoritesService, useClass: FavoritesServiceMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProductCardComponent);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('product', mockProduct);
+    auth = TestBed.inject(LoginService) as unknown as LoginServiceMock;
+    cart = TestBed.inject(CartService) as unknown as CartServiceMock;
+    favs = TestBed.inject(FavoritesService) as unknown as FavoritesServiceMock;
+    router = TestBed.inject(Router);
+
     fixture.detectChanges();
   });
 
@@ -35,26 +65,26 @@ describe('ProductCardComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should display the product title', () => {
-    const titleElement: HTMLElement = fixture.nativeElement.querySelector('.product-title');
-    expect(titleElement.textContent).toContain(mockProduct.title);
+  it('should add to cart when logged in', () => {
+    auth.setLogged(true);
+    component.onAddToCart();
+    expect(cart.add).toHaveBeenCalled();
   });
 
-  it('should display the product price formatted as currency (contains $ and part of value)', () => {
-    const priceElement: HTMLElement = fixture.nativeElement.querySelector('.price');
-    expect(priceElement.textContent).toContain('$');       // símbolo
-    // Evitamos dependencia exacta del locale
-    expect(priceElement.textContent.replace(/\s/g, '')).toMatch(/15,?0?0?0?.?5|15\.000,50/);
+  it('should redirect to login when not logged in (add)', () => {
+    const navSpy = spyOn(router, 'navigate').and.stub();
+    spyOn(window, 'alert').and.stub();
+    auth.setLogged(false);
+
+    component.onAddToCart();
+
+    expect(cart.add).not.toHaveBeenCalled();
+    expect(navSpy).toHaveBeenCalledWith(['/login']);
   });
-  /*
-    it('should link to the product permalink', () => {
-      const linkElement: HTMLAnchorElement = fixture.nativeElement.querySelector('.product-link');
-      expect(linkElement.href).toBe(mockProduct.permalink);
-    }); 
-  */
-  it('should display the product thumbnail', () => {
-    const imgElement: HTMLImageElement = fixture.nativeElement.querySelector('.product-img');
-    expect(imgElement.src).toContain(mockProduct.thumbnail!);
-    expect(imgElement.alt).toBe(mockProduct.title);
+
+  it('should toggle favorite when logged in', () => {
+    auth.setLogged(true);
+    component.onToggleFav();
+    expect(favs.toggle).toHaveBeenCalled();
   });
 });

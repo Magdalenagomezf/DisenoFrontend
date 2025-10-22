@@ -1,0 +1,71 @@
+.favorites {
+  display: grid;
+  gap: 1rem;
+}
+
+.empty {
+  padding: 1.25rem;
+  border: 1px dashed #e5e7eb;
+  border-radius: .75rem;
+  text-align: center;
+
+  .btn {
+    margin-top: .5rem;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: .75rem;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: .75rem;
+  border: 1px solid #eee;
+  border-radius: .75rem;
+  padding: .75rem;
+  background: #fff;
+}
+
+.thumb {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: .5rem;
+  background: #f5f5f5;
+}
+
+.body {
+  display: grid;
+  gap: .35rem;
+}
+
+.title {
+  font-size: .95rem;
+  font-weight: 600;
+}
+
+.price {
+  color: #047857;
+  font-weight: 700;
+}
+
+.actions {
+  display: inline-flex;
+  gap: .5rem;
+  margin-top: .25rem;
+}
+
+.btn {
+  padding: .45rem .7rem;
+  border-radius: .5rem;
+  border: 1px solid #ddd;
+  background: #fafafa;
+  cursor: pointer;
+
+  &.outline { background: #fff; }
+  &.danger  { border-color: #fecaca; background: #fee2e2; }
+}

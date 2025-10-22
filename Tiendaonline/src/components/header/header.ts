@@ -1,6 +1,7 @@
 import { Component, HostListener, inject } from '@angular/core';
 import { NgIf, NgFor, NgClass } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+import { LoginService } from '../../app/services/login.service';
 
 @Component({
   selector: 'app-header',
@@ -11,6 +12,8 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class Header {
   private router = inject(Router);
+  auth = inject(LoginService);
+
   open = false;
   toggle() { this.open = !this.open; }
   close() { this.open = false; }
@@ -26,11 +29,18 @@ export class Header {
   // Evita cerrar al hacer click dentro del panel
   stop(e: Event) { e.stopPropagation(); }
 
-  // NUEVO: estado del submenú
+  // estado del submenú
   submenuOpen = false;
   openSubmenu() { this.submenuOpen = true; }
   closeSubmenu() { this.submenuOpen = false; }
   toggleSubmenu() { this.submenuOpen = !this.submenuOpen; }
+
+  // acciones de cuenta
+  goLogin() { this.router.navigate(['/login']); }
+  logout() {
+    this.auth.logout();
+    this.router.navigateByUrl('/');
+  }
 
   categorias = [
     { label: 'Pantalones', link: '/categoria/pantalones' },

@@ -4,10 +4,10 @@ import { Header } from '../components/header/header';
 
 @Component({
   selector: 'app-root',
-  standalone: true,                  // 👈 agregado
+  standalone: true,                 
   imports: [RouterOutlet, Header],
   templateUrl: './app.html',
-  styleUrls: ['./app.scss']          // 👈 plural + array
+  styleUrls: ['./app.scss']         
 })
 export class App {
   protected readonly title = signal('Tiendaonline');
