@@ -3,14 +3,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: .75rem;
   padding: .75rem 1rem;
   border-bottom: 1px solid #e5e7eb;
+}
+
+.header-left {
+  display: inline-flex;
+  align-items: center;
+  gap: .75rem;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: .3rem;
+  gap: .5rem;
   font-weight: 700;
   color: inherit;
   text-decoration: none;
@@ -20,21 +27,78 @@
     height: 50px;
     object-fit: contain;
   }
+
+  .brand {
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: .2px;
+  }
 }
 
-.fotitos {
+/* Search */
+.search {
+  flex: 1 1 520px;
+  max-width: 700px;
   display: flex;
   align-items: center;
-  gap: .3rem;
-  font-weight: 700;
-  color: inherit;
-  text-decoration: none;
+  gap: .4rem;
+}
 
-  img {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-  }
+.search input[type="search"] {
+  flex: 1 1 auto;
+  height: 38px;
+  padding: 0 .75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  outline: none;
+}
+
+.search input[type="search"]:focus {
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 3px rgba(148, 163, 184, .25);
+}
+
+.search button {
+  height: 38px;
+  width: 42px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  cursor: pointer;
+}
+
+.search button img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid #e5e7eb;
+  background: #fff;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: #f9fafb;
+}
+
+.icon-btn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 /* Botón hamburguesa */
@@ -75,8 +139,8 @@
   inset: 0;
   background: rgba(0, 0, 0, .45);
   display: flex;
-  justify-content: flex-end;
-  /* panel desde la derecha */
+  justify-content: flex-start;
+  /* panel desde la izquierda */
   z-index: 50;
 }
 
@@ -89,16 +153,16 @@
   transform: translateX(0);
   /* entra ya visible al crear el *ngIf* */
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto 1fr auto;
   gap: 1rem;
   padding: 1rem;
-  box-shadow: -10px 0 30px rgba(0, 0, 0, .15);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, .15);
   animation: slideIn .18s ease-out;
 }
 
 @keyframes slideIn {
   from {
-    transform: translateX(20px);
+    transform: translateX(-20px);
     opacity: 0;
   }
 
@@ -145,6 +209,29 @@
   background: #f3f4f6;
 }
 
+/* Make middle area scroll and bottom links fixed */
+.drawer__content {
+  overflow: auto;
+  min-height: 0;
+}
+
+.drawer__footer {
+  border-top: 1px solid #eef2f7;
+  padding-top: .5rem;
+}
+
+/* Extra: keep footer pinned even with long content on mobile Safari */
+.drawer__footer {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+}
+
+/* Emphasis for "Ver todo Ropa" */
+.submenu .all-link a {
+  font-weight: 700;
+}
+
 .close {
   border: 0;
   background: transparent;
@@ -155,7 +242,11 @@
 
 /* Desktop: podés ocultar la hamburguesa y mostrar un menú normal si querés */
 @media (min-width: 1024px) {
-  /* .hamburger { display:none; }  // si preferís menú horizontal en desktop */
+  .header {
+    justify-content: space-between;
+  }
+
+  /* .hamburger { display:none; } */
 }
 
 .menu-list {
@@ -219,4 +310,84 @@
 
 .submenu li a:hover {
   background: #f9fafb;
+}
+
+/* Mega submenu */
+.submenu.mega {
+  padding: .5rem 0 0;
+  border-left: 0;
+}
+
+.submenu.mega.open {
+  max-height: 900px;
+}
+
+.mega__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .75rem;
+  padding: .5rem 0 0;
+}
+
+.mega__col h4 {
+  margin: 0 0 .25rem;
+  font-size: .85rem;
+  color: #6b7280;
+}
+
+.mega__col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .15rem;
+}
+
+.mega__col ul a {
+  padding: .4rem .25rem;
+}
+
+.mega__col ul a:hover {
+  background: #f3f4f6;
+}
+
+.mega__col.highlight {
+  background: #f9fafb;
+  border: 1px solid #eef2f7;
+  border-radius: .5rem;
+  padding: .5rem;
+}
+
+.highlight__card {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: .5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.highlight__thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: .375rem;
+  background: linear-gradient(135deg, #fde68a, #fca5a5);
+}
+
+.highlight__body {
+  display: grid;
+}
+
+.highlight__body strong {
+  font-size: .9rem;
+}
+
+.highlight__body span {
+  font-size: .8rem;
+  color: #6b7280;
+}
+
+@media (min-width: 768px) {
+  .mega__grid {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
