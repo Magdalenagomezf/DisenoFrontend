@@ -6,13 +6,27 @@
 
     <a class="logo" routerLink="/">
         <img src="logo.jpg" alt="Logo de la Tienda" />
+        <span class="brand">MANGO</span>
     </a>
-    <a class="fotitos">
-        <img src="busqeuda.jpg" alt="Buscar" class="search-icon" />
-        <img src="usuario.jpg" alt="Usuario" class="user-icon" />
-        <img src="carrito.jpg" alt="Carrito de compras" class="cart-icon" />
-        <img src="corazon.jpg" alt="Carrito de compras" class="cart-icon" />
-    </a>
+
+    <form class="search" role="search" (submit)="$event.preventDefault()">
+        <input type="search" placeholder="Buscar productos..." aria-label="Buscar productos" />
+        <button type="submit" aria-label="Buscar">
+            <img src="busqeuda.jpg" alt="Buscar" />
+        </button>
+    </form>
+
+    <div class="actions">
+        <button type="button" class="icon-btn" aria-label="Favoritos">
+            <img src="corazon.jpg" alt="Favoritos" />
+        </button>
+        <button type="button" class="icon-btn" aria-label="Cuenta">
+            <img src="usuario.jpg" alt="Cuenta" />
+        </button>
+        <button type="button" class="icon-btn" aria-label="Carrito">
+            <img src="carrito.jpg" alt="Carrito" />
+        </button>
+    </div>
 
 
 </nav>
@@ -27,16 +41,43 @@
                         Productos
                         <span class="chevron" [class.rot]="submenuOpen">▾</span>
                     </button>
-                    <ul id="submenu-productos" class="submenu" [class.open]="submenuOpen">
-                        <li *ngFor="let c of categorias">
-                            <a [routerLink]="c.link">{{ c.label }}</a>
-                        </li>
-                    </ul>
+                    <div id="submenu-productos" class="submenu mega" [class.open]="submenuOpen" role="region"
+                        aria-label="Submenú de productos">
+                        <div class="mega__grid">
+                            <div class="mega__col">
+                                <h4>Ropa</h4>
+                                <ul>
+                                    <li class="all-link"><a routerLink="/categoria/ropa">Ver todo Ropa</a></li>
+                                    <li *ngFor="let c of categorias">
+                                        <a [routerLink]="c.link">{{ c.label }}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="mega__col">
+                                <h4>Novedades</h4>
+                                <ul>
+                                    <li><a routerLink="/novedades">Últimos lanzamientos</a></li>
+                                    <li><a routerLink="/ofertas">Ofertas</a></li>
+                                </ul>
+                            </div>
+                            <div class="mega__col highlight">
+                                <h4>Destacado</h4>
+                                <a routerLink="/categoria/tops" class="highlight__card">
+                                    <div class="highlight__thumb" aria-hidden="true"></div>
+                                    <div class="highlight__body">
+                                        <strong>Top colección verano</strong>
+                                        <span>Descubrí colores y texturas</span>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </li>
             </ul>
         </section>
 
         <section class="drawer__section">
+
             <h3>Links</h3>
             <ul>
                 <li *ngFor="let l of links">
