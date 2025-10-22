@@ -1,4 +1,3 @@
-// src/pages/home/home.ts
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -18,7 +17,7 @@ export class HomeComponent implements OnInit {
   private http = inject(HttpClient);
 
   // estado
-  limit = signal(194);                 // cantidad de productos a traer
+  limit = signal(194);                 // ver TODOS
   selectedCategory = signal<string>(''); // '' = todas
 
   productos = signal<ProductoInterface[]>([]);
@@ -32,24 +31,25 @@ export class HomeComponent implements OnInit {
     this.load();
   }
 
-  /** Trae todas las categorías de DummyJSON */
+  /** Trae categorías y normaliza string/objeto */
   private loadCategories() {
-    // https://dummyjson.com/products/categories  -> array de strings
-    this.http.get<string[]>('https://dummyjson.com/products/categories')
-      .subscribe({
-        next: (cats) => {
-          // Convertimos a {id,name}
-          const map = (id: string) => ({ id, name: this.prettyCat(id) });
-          this.categorias.set(cats.map(map));
-        },
-        error: (e) => {
-          console.error('Error categorías', e);
-          this.categorias.set([]);
-        }
-      });
+    this.http.get<any>('https://dummyjson.com/products/categories').subscribe({
+      next: (res) => {
+        // API puede devolver: string[]  ó  {slug,name}[]  ó  {id,name}[]
+        const list: any[] = Array.isArray(res) ? res : (res?.categories ?? []);
+        const cats: CatVal[] = list
+          .map((raw) => this.normalizeCat(raw))
+          .filter((c): c is CatVal => !!c.id);
+        this.categorias.set(cats);
+      },
+      error: (e) => {
+        console.error('Error categorías', e);
+        this.categorias.set([]);
+      },
+    });
   }
 
-  /** Carga TODOS los productos o por categoría (según selectedCategory) */
+  /** Carga TODOS o por categoría */
   load() {
     this.loading.set(true);
     this.error.set('');
@@ -58,20 +58,19 @@ export class HomeComponent implements OnInit {
       ? `https://dummyjson.com/products/category/${encodeURIComponent(cat)}?limit=${this.limit()}`
       : `https://dummyjson.com/products?limit=${this.limit()}`;
 
-    this.http.get<{ products: any[]; total: number }>(url)
-      .subscribe({
-        next: (resp) => {
-          const items = (resp.products ?? []).map((p) => this.toMLItem(p));
-          this.productos.set(items);
-          this.total.set(resp.total ?? items.length);
-          this.loading.set(false);
-        },
-        error: (err) => {
-          console.error(err);
-          this.error.set('No se pudieron cargar los productos.');
-          this.loading.set(false);
-        },
-      });
+    this.http.get<{ products: any[]; total: number }>(url).subscribe({
+      next: (resp) => {
+        const items = (resp.products ?? []).map((p) => this.toMLItem(p));
+        this.productos.set(items);
+        this.total.set(resp.total ?? items.length);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error(err);
+        this.error.set('No se pudieron cargar los productos.');
+        this.loading.set(false);
+      },
+    });
   }
 
   onSelectCategory(id: string) {
@@ -79,7 +78,26 @@ export class HomeComponent implements OnInit {
     this.load();
   }
 
-  /** Adapta el item de DummyJSON al tipo que espera tu ProductCard */
+  /** Normaliza categoría desde string u objeto */
+  private normalizeCat(raw: any): CatVal {
+    if (typeof raw === 'string') {
+      return { id: raw, name: this.prettyCat(raw) };
+    }
+    if (raw && typeof raw === 'object') {
+      const id = raw.slug ?? raw.id ?? raw.name ?? '';
+      const name = raw.name ? String(raw.name) : this.prettyCat(id);
+      return { id: String(id), name };
+    }
+    return { id: '', name: '' };
+  }
+
+  /** Title-case y espacios: "womens-dresses" -> "Womens Dresses" */
+  private prettyCat(val: unknown): string {
+    const s = String(val ?? '');
+    return s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  }
+
+  /** Convierte un producto de la API a un MLItem */
   private toMLItem(p: any): ProductoInterface {
     return {
       id: p.id,
@@ -88,12 +106,7 @@ export class HomeComponent implements OnInit {
       currency_id: 'USD',
       thumbnail: p.thumbnail ?? p.images?.[0] ?? '',
       category: p.category,
-      permalink: `https://dummyjson.com/products/${p.id}`,
+      permalink: `https://dummyjson.com/products/${p.id}`, // para el botón externo
     } as ProductoInterface;
-  }
-
-  private prettyCat(id: string) {
-    // "womens-dresses" -> "Womens Dresses"
-    return id.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
   }
 }
