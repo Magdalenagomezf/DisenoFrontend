@@ -3,13 +3,13 @@
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <label>Usuario</label>
-    <input formControlName="username" placeholder="tu_usuario" />
+    <input formControlName="username" placeholder="username" />
     <div class="error" *ngIf="form.controls.username.touched && form.controls.username.invalid">
       Ingresá un usuario.
     </div>
 
     <label>Contraseña</label>
-    <input type="password" formControlName="password" placeholder="••••••" />
+    <input type="password" formControlName="password" placeholder="password"/>
     <div class="error" *ngIf="form.controls.password.touched && form.controls.password.invalid">
       Ingresá una contraseña (mín. 4).
     </div>

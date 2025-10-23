@@ -1,1 +1,20 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+
+$theme: mat.define-theme((
+  color: (
+    theme-type: light
+  ),
+  density: 0
+));
+
+:root {
+  @include mat.all-component-themes($theme);
+  @include mat.typography-hierarchy(); 
+}
+
+body {
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}

@@ -15,7 +15,6 @@ import { FavoritesService } from '../../app/services/favorites.service';
   standalone: true,
   imports: [
     CommonModule,
-    NgIf,
     MatCardModule,
     MatIconModule,
     MatButtonModule,
