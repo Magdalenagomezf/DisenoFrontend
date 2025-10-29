@@ -28,6 +28,10 @@ export class FavoritesService {
     });
   }
 
+  isFavorite(id: number): boolean {
+    return this.items().some(i => i.id === id);
+  }
+
   toggle(item: FavoriteItem) {
     const exists = this.items().some(i => i.id === item.id);
     this.items.set(exists ? this.items().filter(i => i.id !== item.id) : [...this.items(), item]);

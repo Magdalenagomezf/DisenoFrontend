@@ -1,27 +1,9 @@
 <nav class="header">
-  <button
-    class="hamburger"
-    type="button"
-    (click)="toggle()"
-    [attr.aria-expanded]="open"
-    aria-controls="offcanvas"
-    aria-label="Abrir menú"
-    [ngClass]="{ open: open }"
-  >
-    <span></span><span></span><span></span>
-  </button>
 
   <a class="logo" routerLink="/">
     <img src="logo.jpg" alt="Logo de la Tienda" />
     <span class="brand">MANGO</span>
   </a>
-
-  <form class="search" role="search" (submit)="$event.preventDefault()">
-    <input type="search" placeholder="Buscar productos..." aria-label="Buscar productos" />
-    <button type="submit" aria-label="Buscar">
-      <img src="busqeuda.jpg" alt="Buscar" />
-    </button>
-  </form>
 
   <div class="actions">
     <!-- favoritos -->
@@ -40,6 +22,11 @@
       <span class="user">👤 {{ auth.currentUser()?.username }}</span>
       <button class="logout" type="button" (click)="logout()">Salir</button>
     </ng-template>
+    
+    <button class="icon-btn" aria-label="Contacto" routerLink="/contacto" routerLinkActive="icon-btn--active">
+    <mat-icon>chat</mat-icon>
+    </button>
+
 
     <!-- Carrito -->
     <button type="button" class="icon-btn" aria-label="Carrito" routerLink="/carrito">
@@ -48,70 +35,3 @@
   </div>
 </nav>
 
-<!-- Drawer / Offcanvas -->
-<div class="backdrop" *ngIf="open" (click)="close()" aria-hidden="true">
-  <aside id="offcanvas" class="drawer" role="dialog" aria-modal="true" (click)="stop($event)">
-    <section class="drawer__section">
-      <ul class="menu-list">
-        <li class="has-submenu" (mouseenter)="openSubmenu()" (mouseleave)="closeSubmenu()">
-          <button
-            type="button"
-            class="menu-btn"
-            (click)="toggleSubmenu()
-            "
-            [attr.aria-expanded]="submenuOpen"
-            aria-controls="submenu-productos"
-          >
-            Productos
-            <span class="chevron" [class.rot]="submenuOpen">▾</span>
-          </button>
-          <div
-            id="submenu-productos"
-            class="submenu mega"
-            [class.open]="submenuOpen"
-            role="region"
-            aria-label="Submenú de productos"
-          >
-            <div class="mega__grid">
-              <div class="mega__col">
-                <h4>Ropa</h4>
-                <ul>
-                  <li class="all-link"><a routerLink="/categoria/ropa">Ver todo Ropa</a></li>
-                  <li *ngFor="let c of categorias">
-                    <a [routerLink]="c.link">{{ c.label }}</a>
-                  </li>
-                </ul>
-              </div>
-              <div class="mega__col">
-                <h4>Novedades</h4>
-                <ul>
-                  <li><a routerLink="/novedades">Últimos lanzamientos</a></li>
-                  <li><a routerLink="/ofertas">Ofertas</a></li>
-                </ul>
-              </div>
-              <div class="mega__col highlight">
-                <h4>Destacado</h4>
-                <a routerLink="/categoria/tops" class="highlight__card">
-                  <div class="highlight__thumb" aria-hidden="true"></div>
-                  <div class="highlight__body">
-                    <strong>Top colección verano</strong>
-                    <span>Descubrí colores y texturas</span>
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </section>
-
-    <section class="drawer__section">
-      <h3>Links</h3>
-      <ul>
-        <li *ngFor="let l of links">
-          <a [routerLink]="l.link">{{ l.label }}</a>
-        </li>
-      </ul>
-    </section>
-  </aside>
-</div>

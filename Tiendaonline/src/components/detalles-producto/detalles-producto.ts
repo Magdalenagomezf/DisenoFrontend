@@ -46,6 +46,9 @@ export default class ProductDetailComponent {
     this.router.navigate(['/login']);
   }
 
+  isFav(id: number) { return this.favs.isFavorite(id); }
+
+
   addToCart() {
     this.requireLoginOr(() =>
       this.cart.add({ id: this.product.id, title: this.product.title, price: this.product.price, image: this.product.thumbnail }, 1)

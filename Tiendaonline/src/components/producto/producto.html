@@ -29,10 +29,16 @@
 
   <!-- Acciones (siempre dentro de la card y alineadas) -->
   <mat-card-actions class="actions">
-    <button mat-stroked-button color="primary" (click)="onToggleFav()" class="btn">
-      <mat-icon>favorite</mat-icon>
-      Favorito
-    </button>
+  <button
+    mat-stroked-button
+    class="btn"
+    (click)="onToggleFav()"
+    [color]="isFav() ? 'warn' : undefined"
+    [attr.aria-pressed]="isFav()"
+  >
+    <mat-icon>{{ isFav() ? 'favorite' : 'favorite_border' }}</mat-icon>
+    {{ isFav() ? 'Favoritos' : 'Favoritos' }}
+  </button>
 
     <button mat-raised-button color="primary" (click)="onAddToCart()" class="btn">
       <mat-icon>add_shopping_cart</mat-icon>

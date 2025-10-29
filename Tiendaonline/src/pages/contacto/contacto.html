@@ -1,0 +1,79 @@
+<section class="contacto">
+  <header class="contacto__header">
+    <h1>Contacto</h1>
+    <p class="subtitle">
+      ¿Tenés una duda o problema? Escribinos y te respondemos a la brevedad.
+    </p>
+  </header>
+
+  <form class="card" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="grid">
+      <mat-form-field appearance="fill" class="col">
+        <mat-label>Nombre y apellido</mat-label>
+        <input matInput formControlName="nombre" placeholder="Ej: Ana García" />
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error *ngIf="showError(form.controls.nombre,'required')">Este campo es obligatorio.</mat-error>
+        <mat-error *ngIf="showError(form.controls.nombre,'minlength')">Mínimo 3 caracteres.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="col">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" placeholder="ana@mail.com" />
+        <mat-icon matSuffix>mail</mat-icon>
+        <mat-error *ngIf="showError(form.controls.email,'required')">Este campo es obligatorio.</mat-error>
+        <mat-error *ngIf="showError(form.controls.email,'pattern')">Ingresá un email válido.</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="grid">
+      <mat-form-field appearance="fill" class="col">
+        <mat-label>Motivo</mat-label>
+        <mat-select formControlName="motivo">
+          <mat-option [value]="null" disabled>Seleccioná un motivo</mat-option>
+          <mat-option *ngFor="let m of motivos" [value]="m.value">{{ m.label }}</mat-option>
+        </mat-select>
+        <mat-error *ngIf="showError(form.controls.motivo,'required')">Seleccioná un motivo.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="col">
+        <mat-label>Nº de pedido (opcional)</mat-label>
+        <input matInput formControlName="nroPedido" placeholder="#ABC123" />
+        <mat-icon matSuffix>receipt_long</mat-icon>
+        <mat-hint>Usá el formato de tu comprobante (ej: #A1B2C3).</mat-hint>
+        <mat-error *ngIf="showError(form.controls.nroPedido,'pattern')">
+          Formato inválido. Ej: #A1B2C3
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="fill" class="block">
+      <mat-label>Mensaje</mat-label>
+      <textarea matInput formControlName="mensaje" rows="6" placeholder="Contanos en detalle tu consulta"></textarea>
+      <mat-hint align="start">Sé lo más clara/o posible.</mat-hint>
+      <mat-hint align="end">{{ mensajeLen() }}/800</mat-hint>
+      <mat-error *ngIf="showError(form.controls.mensaje,'required')">Este campo es obligatorio.</mat-error>
+      <mat-error *ngIf="showError(form.controls.mensaje,'minlength')">Mínimo 20 caracteres.</mat-error>
+      <mat-error *ngIf="showError(form.controls.mensaje,'maxlength')">Máximo 800 caracteres.</mat-error>
+      <mat-error *ngIf="showError(form.controls.mensaje,'emptyText')">El mensaje no puede estar vacío.</mat-error>
+      <mat-error *ngIf="showError(form.controls.mensaje,'repeatedChars')">Ingresá un mensaje válido.</mat-error>
+    </mat-form-field>
+
+    <div class="policy">
+      <mat-checkbox formControlName="aceptaPrivacidad">
+        Acepto la <a routerLink="/privacidad" class="link">política de privacidad</a>
+      </mat-checkbox>
+      <div class="policy__error" *ngIf="showError(form.controls.aceptaPrivacidad,'required')">
+        Debés aceptar para continuar.
+      </div>
+    </div>
+
+    <div class="actions">
+      <button mat-stroked-button type="button" [disabled]="loading()">Limpiar</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="loading() || form.pending">
+        <mat-icon *ngIf="!loading()">send</mat-icon>
+        <span *ngIf="!loading()">Enviar</span>
+        <span *ngIf="loading()" class="spinner"></span>
+      </button>
+    </div>
+  </form>
+</section>

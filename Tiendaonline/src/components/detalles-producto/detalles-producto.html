@@ -12,17 +12,12 @@
         Agregar al carrito
       </button>
 
-      <button mat-stroked-button color="primary" (click)="toggleFav()">
-        <mat-icon>favorite</mat-icon>
-        Agregar a favoritos
+      <button mat-stroked-button color="primary" (click)="toggleFav()" [color]="isFav(product.id) ? 'warn' : undefined">
+        <mat-icon>{{ isFav(product.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
+        {{ isFav(product.id) ? 'Quitar de favoritos' : 'Agregar a favoritos' }}
       </button>
 
-      <a [href]="product.permalink || 'https://dummyjson.com/products/'+product.id" target="_blank">
-        <button mat-flat-button>
-          <mat-icon>launch</mat-icon>
-          Ver en sitio externo
-        </button>
-      </a>
+
     </div>
 
     <h3>Detalles</h3>

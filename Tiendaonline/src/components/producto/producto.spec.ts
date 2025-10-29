@@ -15,7 +15,9 @@ class LoginServiceMock {
   setLogged(v: boolean) { this._logged = v; }
 }
 class CartServiceMock { add = jasmine.createSpy('add'); }
-class FavoritesServiceMock { toggle = jasmine.createSpy('toggle'); }
+class FavoritesServiceMock { toggle = jasmine.createSpy('toggle'); 
+  isFavorite = (_id: number) => false; // Por defecto es no favorito
+}
 
 describe('ProductCardComponent', () => {
   let component: ProductCardComponent;

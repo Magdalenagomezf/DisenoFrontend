@@ -62,6 +62,10 @@ export class ProductCardComponent {
     );
   }
 
+  isFav(): boolean {
+    return this.favs.isFavorite(Number(this.product().id));
+  }
+
   onToggleFav() {
     const p = this.product();
     this.requireLoginOr(() =>

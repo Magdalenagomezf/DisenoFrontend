@@ -25,5 +25,9 @@ export const routes: Routes = [
 
   { path: 'login', component: LoginComponent },
 
+  { path: 'contacto',
+    loadComponent: () => import('../pages/contacto/contacto').then(m => m.default)
+   },
+
   { path: '**', redirectTo: '' },
 ];
