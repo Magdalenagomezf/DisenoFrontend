@@ -64,10 +64,6 @@ export default class ContactoPage {
       nonNullable: true
     }),
     motivo: this.fb.control<string | null>(null, { validators: [Validators.required] }),
-    nroPedido: this.fb.control('', {
-      validators: [Validators.pattern(/^#?[A-Z0-9\-]{6,}$/)],
-      nonNullable: true
-    }),
     mensaje: this.fb.control('', {
       validators: [Validators.required, Validators.minLength(20), Validators.maxLength(800), nonTrivialText],
       nonNullable: true
@@ -107,7 +103,6 @@ export default class ContactoPage {
         nombre: '',
         email: '',
         motivo: null,
-        nroPedido: '',
         mensaje: '',
         aceptaPrivacidad: false
       });
