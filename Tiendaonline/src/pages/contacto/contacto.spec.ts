@@ -31,7 +31,6 @@ describe('ContactoPage', () => {
       nombre: 'Ana García',
       email: 'ana@example.com',
       motivo: 'duda',
-      nroPedido: '#A1B2C3',
       mensaje: 'Este es un mensaje de prueba con suficiente detalle.',
       aceptaPrivacidad: true
     });
