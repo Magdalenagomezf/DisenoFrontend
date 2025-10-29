@@ -1,37 +1,42 @@
-<mat-card class="product-card">
-  <!-- Header clickable: navega al detalle interno -->
-  <div class="product-link" (click)="goDetail($event)">
-    <mat-card-header>
-      <div mat-card-avatar class="product-image-container">
-        <img [src]="product().thumbnail" [alt]="product().title" class="product-img" />
-      </div>
-      <mat-card-title class="product-title">{{ product().title }}</mat-card-title>
-      <mat-card-subtitle>{{ product().id }}</mat-card-subtitle>
-    </mat-card-header>
+<mat-card class="product-card mat-elevation-z2">
+  <!-- Media / Imagen (click navega al detalle) -->
+  <div class="media" (click)="goDetail($event)" role="button" tabindex="0">
+    <img
+      [src]="product().thumbnail"
+      [alt]="product().title"
+      class="product-img"
+      loading="lazy"
+    />
   </div>
 
-  <mat-card-content>
-    <p class="product-description">{{ product().title | slice: 0 : 70 }}...</p>
-  </mat-card-content>
+  <!-- Info principal -->
+  <mat-card-content class="info" (click)="goDetail($event)">
+    <h3 class="product-title" title="{{ product().title }}">
+      {{ product().title }}
+    </h3>
 
-  <mat-card-actions class="actions">
-    <div class="price-section">
-      <span class="price font-bold text-xl text-green-700">
+    <div class="meta">
+      <span class="price">
         {{ product().price | currency: product().currency_id }}
       </span>
+      <span class="sku">#{{ product().id }}</span>
     </div>
 
-    <div class="btns">
-      <button mat-stroked-button color="primary" (click)="onToggleFav()">
-        <mat-icon>favorite</mat-icon>
-        Favorito
-      </button>
+    <p class="product-description">
+      {{ product().title | slice: 0 : 80 }}...
+    </p>
+  </mat-card-content>
 
-      <button mat-raised-button color="primary" (click)="onAddToCart()">
-        <mat-icon>add_shopping_cart</mat-icon>
-        Agregar
-      </button>
+  <!-- Acciones (siempre dentro de la card y alineadas) -->
+  <mat-card-actions class="actions">
+    <button mat-stroked-button color="primary" (click)="onToggleFav()" class="btn">
+      <mat-icon>favorite</mat-icon>
+      Favorito
+    </button>
 
-    </div>
+    <button mat-raised-button color="primary" (click)="onAddToCart()" class="btn">
+      <mat-icon>add_shopping_cart</mat-icon>
+      Agregar
+    </button>
   </mat-card-actions>
 </mat-card>

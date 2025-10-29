@@ -11,9 +11,12 @@ import LoginComponent from '../components/login/login';
 import FavoritesPage from '../pages/favorites/favorites';
 import CartPage from '../pages/cart/cart';
 
+import { LandingComponent } from '../pages/landing/landing';
+
 export const routes: Routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' },
-  { path: 'productos', component: ProductCardComponent },
+  { path: '', component: LandingComponent, pathMatch: 'full' },
+
+  { path: 'productos', component: HomeComponent },
 
  { path: 'detalle/:id', component: ProductDetailComponent },
 

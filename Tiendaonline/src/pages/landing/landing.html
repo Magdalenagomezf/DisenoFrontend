@@ -1,0 +1,44 @@
+<!-- HERO con video de fondo -->
+<section class="hero">
+<video
+  class="hero__video"
+  autoplay
+  muted
+  loop
+  playsinline
+  preload="metadata"
+>
+  <source src="assets/hero.mp4" type="video/mp4" />
+  Tu navegador no soporta videos HTML5.
+</video>
+<div class="hero__overlay"></div>
+
+
+  <div class="hero__content">
+    <h1>Comprá lo que quieras, en un solo lugar</h1>
+    <p>Productos de todas las categorías, envíos rápidos y pagos seguros.</p>
+
+    <div class="hero__cta">
+      <a routerLink="/productos" class="btn btn--primary">Ver todos los productos</a>
+      <a routerLink="/productos" class="btn btn--ghost">Explorar catálosgo</a>
+    </div>
+  </div>
+</section>
+
+<!-- Destacados -->
+<section class="section">
+  <div class="section__head">
+    <h2>Destacados para vos</h2>
+    <a routerLink="/productos" class="link">Ver catálogo completo</a>
+  </div>
+
+  <div class="grid" *ngIf="!loading(); else skeletons">
+    <app-product-card *ngFor="let p of top()" [product]="p"></app-product-card>
+  </div>
+
+  <ng-template #skeletons>
+    <div class="grid">
+      <div class="skeleton" *ngFor="let _ of [].constructor(8)"></div>
+    </div>
+  </ng-template>
+</section>
