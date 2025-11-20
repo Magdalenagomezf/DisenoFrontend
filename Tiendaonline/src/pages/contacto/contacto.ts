@@ -9,6 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { debounceTime } from 'rxjs/operators';
+import { ContactService } from '../../app/services/contact.service';
+import { firstValueFrom } from 'rxjs';
 
 /** Validador sencillo para evitar mensajes vacíos con solo espacios o repetición de caracteres */
 function nonTrivialText(control: AbstractControl): ValidationErrors | null {
@@ -42,6 +44,7 @@ const emailRegex =
 export default class ContactoPage {
   private fb = inject(FormBuilder);
   private snackbar = inject(MatSnackBar);
+  private contactService = inject(ContactService);
 
   loading = signal(false);
   submitted = signal(false);
@@ -85,7 +88,7 @@ export default class ContactoPage {
     effect(onCleanup => onCleanup(() => sub.unsubscribe()));
   }
 
-  async onSubmit() {
+    async onSubmit() {
     this.submitted.set(true);
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -95,8 +98,24 @@ export default class ContactoPage {
 
     try {
       this.loading.set(true);
-      // Simulación de envío a API
-      await new Promise(res => setTimeout(res, 900));
+
+      const payload = this.form.getRawValue();
+
+      const created = await firstValueFrom(
+        this.contactService.sendContact({
+          ...payload,
+          source: 'mango-contact-form'
+        })
+      );
+
+      const ticketId = 1; 
+      await firstValueFrom(
+        this.contactService.updateContact(ticketId, {
+          ...payload,
+          source: 'mango-contact-form',
+          status: 'recibido'
+        })
+      );
 
       this.snackbar.open('¡Gracias! Recibimos tu mensaje y te contactaremos pronto.', 'Cerrar', { duration: 3500 });
       this.form.reset({
@@ -107,12 +126,14 @@ export default class ContactoPage {
         aceptaPrivacidad: false
       });
       this.submitted.set(false);
-    } catch {
+    } catch (error) {
+      console.error('Error enviando contacto', error);
       this.snackbar.open('No pudimos enviar el formulario. Probá nuevamente.', 'Cerrar', { duration: 3500 });
     } finally {
       this.loading.set(false);
     }
   }
+
 
   // Helpers para el template
   showError(control: AbstractControl | null, error: string): boolean {

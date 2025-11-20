@@ -20,14 +20,12 @@ export class CartService {
   readonly list = computed(() => this.items());
 
   constructor(private auth: LoginService) {
-    // cargar cuando cambia usuario
     effect(() => {
       const user = this.auth.currentUser();
       const key = userScopedKey(user, BASE_KEY);
       const data = readLS<CartItem[]>(key, []);
       this.items.set(data);
     });
-    // guardar cuando cambian items/usuario
     effect(() => {
       const user = this.auth.currentUser();
       const key = userScopedKey(user, BASE_KEY);
